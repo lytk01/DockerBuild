@@ -20,8 +20,8 @@ RUN sed -i 's/http:\/\/archive\.ubuntu\.com\/ubuntu\//http:\/\/mirrors\.163\.com
 # Install basic dependencies
 RUN apt-get update -y\
     && apt-get install -y wget \
-    && wget -e "http_proxy=http://192.168.13.71:1080" -P $ROOTDIR/src/ http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz \
-    && wget -e "https_proxy=http://192.168.13.71:1080" -O $ROOTDIR/src/openjpeg-${OPENJPEG_VERSION}.tar.gz https://github.com/uclouvain/openjpeg/archive/v${OPENJPEG_VERSION}.tar.gz \
+    && wget -P $ROOTDIR/src/ http://download.osgeo.org/gdal/${GDAL_VERSION}/gdal-${GDAL_VERSION}.tar.gz \
+    && wget -O $ROOTDIR/src/openjpeg-${OPENJPEG_VERSION}.tar.gz https://github.com/uclouvain/openjpeg/archive/v${OPENJPEG_VERSION}.tar.gz \
     && apt-get install -y \
     software-properties-common \
     python-software-properties \
