@@ -116,4 +116,59 @@ RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
 && rm -r /opencv-${OPENCV_VERSION}
 
 
+#tensorflowgpu keras mxnet jupyter
+RUN mkdir -p ~/.pip \
+&&  echo "[global]\nindex-url = https://pypi.tuna.tsinghua.edu.cn/simple/" > ~/.pip/pip.conf \
+&& pip3 install --upgrade pip \
+&& pip3 install --upgrade tensorflow-gpu==1.3.0 \
+&& pip3 install --upgrade keras==2.1.0 \
+&& pip3 install h5py matplotlib pillow \
+&& pip3 install -U --pre mxnet-cu80
+#mxnet
+#&& cd /root && git clone --recursive https://github.com/apache/incubator-mxnet.git mxnet --branch 0.11.0 && cd mxnet && \
+# Make
+#make -j $(nproc) USE_OPENCV=1 USE_BLAS=openblas USE_CUDA=1 USE_CUDA_PATH=/usr/local/cuda USE_CUDNN=1 \
+#&&cd /root/mxnet/python && python3 setup.py install
+
+RUN pip --no-cache-dir install \
+    # jupyter notebook and ipython (Python 2)
+    ipython \
+    ipykernel \
+    jupyter \
+    # data analysis (Python 2)
+    pandas \
+    scikit-learn \
+    statsmodels \
+ && python -m ipykernel.kernelspec
+RUN pip3 --no-cache-dir install \
+    # jupyter notebook and ipython (Python 3)
+    ipython \
+    ipykernel \
+    # data analysis (Python 3)
+    pandas \
+    scikit-learn \
+    statsmodels \
+ && python3 -m ipykernel.kernelspec
+
+# configure console
+RUN echo 'alias ll="ls --color=auto -lA"' >> /root/.bashrc \
+ && echo '"\e[5~": history-search-backward' >> /root/.inputrc \
+ && echo '"\e[6~": history-search-forward' >> /root/.inputrc
+# default password: keras
+ENV PASSWD='sha1:98b767162d34:8da1bc3c75a0f29145769edc977375a373407824'
+
+# quick test and dump package lists
+RUN python -c "import tensorflow; print(tensorflow.__version__)" \
+ && python3 -c "import tensorflow; print(tensorflow.__version__)" \
+ && dpkg-query -l > /dpkg-query-l.txt \
+ && pip2 freeze > /pip2-freeze.txt \
+ && pip3 freeze > /pip3-freeze.txt
+
+# for jupyter
+EXPOSE 8888
+# for tensorboard
+EXPOSE 6006
+
+WORKDIR /srv/
+CMD /bin/bash -c 'jupyter notebook --no-browser --ip=* --NotebookApp.password="$PASSWD" "$@"'
 
