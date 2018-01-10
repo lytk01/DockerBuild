@@ -10,7 +10,7 @@ ENV OPENJPEG_VERSION 2.2.0
 
 # Load assets
 WORKDIR $ROOTDIR/
-#RUN sed -i 's/http:\/\/archive\.ubuntu\.com\/ubuntu\//http:\/\/mirrors\.163\.com\/ubuntu\//g' /etc/apt/sources.list
+RUN sed -i 's/http:\/\/archive\.ubuntu\.com\/ubuntu\//http:\/\/mirrors\.163\.com\/ubuntu\//g' /etc/apt/sources.list 
     #&& export http_proxy=http://192.168.13.71:1080 \
     #&& export https_proxy=http://192.168.13.71:1080
 
@@ -114,4 +114,6 @@ RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
 && make install \
 && rm /${OPENCV_VERSION}.zip \
 && rm -r /opencv-${OPENCV_VERSION}
+
+
 
